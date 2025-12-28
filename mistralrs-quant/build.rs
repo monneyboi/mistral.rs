@@ -351,6 +351,13 @@ fn main() -> Result<(), String> {
                     Platform::Ios => "iphoneos",
                 }
             }
+
+            fn std(&self) -> &str {
+                match self {
+                    Platform::MacOS => "macos-metal2.3",
+                    Platform::Ios => "ios-metal2.3",
+                }
+            }
         }
 
         fn compile(platform: Platform) -> Result<(), String> {
@@ -370,7 +377,8 @@ fn main() -> Result<(), String> {
                 .arg("-Wextra")
                 .arg("-O3")
                 .arg("-c")
-                .arg("-w");
+                .arg("-w")
+                .arg(format!("-std={}", platform.std()));
             for metal_file in METAL_SOURCES {
                 compile_air_cmd.arg(sources.join(format!("{metal_file}.metal")));
             }
